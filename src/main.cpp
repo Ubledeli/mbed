@@ -1,7 +1,9 @@
 #include "mbed.h"
 #include "rtos.h"
+#include "TextLCD.h"
 
 DigitalIn btn(PA_0);
+AnalogIn pot(PA_1);
 
 int light(DigitalOut &led,int delay){
   led = !led;
@@ -16,22 +18,20 @@ int main() {
           leds[i] = new DigitalOut(PinName(PE_8+i));
       }
 int delay = 50;
-int m = -1;
-    while (true) {
+      while (true) {
       for ( int i=0; i<8; i++ ){
-        delay+=m;
-        light(*leds[i],delay);
-        if (btn ){
-          //int a = (i + 4) % 8;
-          //light(*leds[(i + 4) % 8],delay);
-          delay = 20;
+        if (pot>=0.6){
+          delay = 220 - round(200*pot);
+          light(*leds[i],delay);
+          }
+        else if(pot<=0.4){
+          delay = 20 + round(200*pot);
+          light(*leds[7-i],delay);
+          }
+        else {
+          Thread::wait(100);
         }
-      }
-      if (delay > 100){
-        m = -1;
-      }
-      else if (delay < 20){
-        m = 1;
+
       }
     }
 }
