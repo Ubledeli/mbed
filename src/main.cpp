@@ -1,9 +1,13 @@
 #include "mbed.h"
 #include "rtos.h"
 #include "TextLCD.h"
+#include "DebounceIn.h"
 
-DigitalIn btn(PA_0);
+
+DebounceIn btn(PA_0);
 AnalogIn pot(PA_1);
+TextLCD lcd(PD_0, PD_2, PD_4, PD_6, PB_3, PB_5); // rs, e, d4-d7
+Timer t;
 
 int light(DigitalOut &led,int delay){
   led = !led;
@@ -17,8 +21,26 @@ int main() {
       {
           leds[i] = new DigitalOut(PinName(PE_8+i));
       }
+int p =0;
+bool down = false;
 int delay = 50;
       while (true) {
+
+          while(btn){
+            if (!down){
+              t.start();
+              lcd.printf("%d\n                ",p,0,0);
+              p++;
+            }
+             down = true;
+
+
+          }
+          t.stop();
+          down = false;
+          Thread::wait(delay);
+        //  lcd.printf("    \n");
+/*
       for ( int i=0; i<8; i++ ){
         if (pot>=0.6){
           delay = 220 - round(200*pot);
@@ -33,5 +55,6 @@ int delay = 50;
         }
 
       }
+*/
     }
 }
