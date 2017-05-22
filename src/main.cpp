@@ -2,6 +2,9 @@
 #include "rtos.h"
 #include "TextLCD.h"
 #include "DebounceIn.h"
+#include "StepperMotorUni"
+#include "RPG"
+#include "KeyPad"
 
 
 DebounceIn btn(PA_0);
